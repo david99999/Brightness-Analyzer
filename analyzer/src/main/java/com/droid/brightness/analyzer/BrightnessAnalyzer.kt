@@ -5,18 +5,19 @@ public class BrightnessAnalyzer {
         return a+b;
     }
 
-    external fun getHistogram(
-        frame: ByteArray,
-        width: Int,
-        height: Int,
-        samplingFactor: Int,
-        pixelsProcessed: IntArray
-    ): IntArray
-
 
     companion object {
         init {
             System.loadLibrary("native-analyzer")
         }
+
+        external fun getHistogram(
+            frame: ByteArray,
+            width: Int,
+            height: Int,
+            samplingFactor: Int,
+            pixelsProcessed: IntArray
+        ): IntArray
+
     }
 }

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">DemoApp</string>
+    <string name="camera_permission_denied">Permissions not granted by the user.</string>
+    <string name="dark_image">DARK IMAGE</string>
+    <string name="normal_image">NORMAL IMAGE</string>
+    <string name="bright_image">BRIGHT IMAGE</string>
 </resources>
