@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion 29
@@ -37,3 +38,60 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
 }
+
+/**Create github.properties in root project folder file with gpr.usr=GITHUB_USER_ID  & gpr.key=PERSONAL_ACCESS_TOKEN**/
+def githubProperties = new Properties()
+githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
+
+
+def getVersionName = { ->
+    return "1.0.0" // Replace with version Name
+}
+
+def getArtifactId = { ->
+    return "analyzer" // Replace with library name ID
+}
+
+publishing {
+    publications {
+        bar(MavenPublication) {
+            groupId 'com.droid.brightness'
+            artifactId getArtifactId()
+            version getVersionName()
+            artifact("$buildDir/outputs/aar/${getArtifactId()}-release.aar")
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/david99999/Brightness-Analyzer")
+
+            credentials {
+                /**Create github.properties in root project folder file with gpr.usr=GITHUB_USER_ID  & gpr.key=PERSONAL_ACCESS_TOKEN**/
+                username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+                password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+            }
+        }
+    }
+}
+
+
+/////////////////////////////////// FOR USING IT ////////////////////////////////////
+
+//repositories {
+//    maven {
+//        name = "GitHubPackages"
+//        url = uri("https://maven.pkg.github.com/david99999/Brightness-Analyzer")
+//
+//        credentials {
+//            username = david99999
+//            password = 1debb51e1842a21e486feccd35e2d40a534cb32b
+//        }
+//    }
+//}
+//dependencies{
+//    ...
+//    implementation 'com.droid.brightness:analyzer:1.0.0'
+//    ...
+//}
