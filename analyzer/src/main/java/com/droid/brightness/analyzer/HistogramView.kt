@@ -8,6 +8,15 @@ import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
 
+/**
+ * Custom view that displays a Histogram for a 256 IntArray with values like
+ *
+ * [0]  -> 0
+ * [1]  -> 0
+ * [2]  -> 0
+ * ...
+ * [255]-> 2000
+ */
 class HistogramView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {

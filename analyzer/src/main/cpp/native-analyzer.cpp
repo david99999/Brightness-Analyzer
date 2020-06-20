@@ -16,18 +16,35 @@ typedef struct {
 } argb;
 
 extern "C" {
-// _00024  due to this method will be called from a companion object and because it is represented as
-// an inner class the class path will become BrightnessAnalyzer$Companion
+/**
+ * Detects the brightness and darkness on a nv21 frame
+ * _00024  due to this method will be called from a companion object and because it is represented as
+ * an inner class the class path will become BrightnessAnalyzer$Companion
+ *
+ * @param frame The NV21 Frame to be analyzed
+ * @param width The Frame width
+ * @param height The Frame height
+ * @param samplingFactor The number of pixels to skip when counting average brightness
+ * @param pixelsProcessed Will contain the number if pixels processed after applying #samplingFactor
+ * @return A 256 IntArray containing the average black/white color values, Ex:
+ *
+ * [0]  -> 0
+ * [1]  -> 0
+ * [2]  -> 0
+ * ...
+ * [255]-> 2000
+ */
+
 JNIEXPORT jintArray JNICALL
 Java_com_droid_brightness_analyzer_BrightnessAnalyzer_00024Companion_getHistogram(JNIEnv *env,
-                                                                                  jobject obj,
-                                                                                  jbyteArray frame,
-                                                                                  jint width,
-                                                                                  jint height,
-                                                                                  jint samplingFactor,
-                                                                                  jintArray pixelsProcessed) {
+                                          jobject obj,
+                                          jbyteArray frame,
+                                          jint width,
+                                          jint height,
+                                          jint samplingFactor,
+                                          jintArray pixelsProcessed) {
 
-    LOGI("analyzing frame byte array");
+    LOGI("c++ analyzing frame byte array");
     jintArray histogram = env->NewIntArray(256);
     jbyte *bytes = env->GetByteArrayElements(frame, 0);
     jint *integers = env->GetIntArrayElements(histogram, 0);
@@ -78,7 +95,7 @@ Java_com_droid_brightness_analyzer_BrightnessAnalyzer_00024Companion_getHistogra
     env->ReleaseIntArrayElements(pixelsProcessed, totalPixels, NULL);
 //        LOGI("releasing native jbyte array");
     env->ReleaseByteArrayElements(frame, bytes, NULL);
-    LOGI("returning java int array");
+    LOGI("c++ returning java int array");
     return histogram;
 }
 

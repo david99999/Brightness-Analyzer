@@ -21,6 +21,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+/**
+ * Main activity that handles Camera permission and CameraX configuration
+ * it setups a {@property BrightnessAnalyzer} that produces a histogram to be
+ * displayed on a #HistogramView showing the brightness and darkness on the preview
+ */
 class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "MainActivity"
@@ -36,8 +41,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        content = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        content!!.view = this
+        content = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+            .apply {
+                view = this@MainActivity
+            }
         checkCameraPerms()
         cameraExecutor = Executors.newSingleThreadExecutor()
     }

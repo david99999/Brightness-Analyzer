@@ -21,7 +21,7 @@ class Utils {
 
     companion object {
 
-        fun yuv420888ToNv21(image: ImageProxy): ByteArray {
+        fun YUV420888ToNv21(image: ImageProxy): ByteArray {
             val pixelCount = image.cropRect.width() * image.cropRect.height()
             val pixelSizeBits = ImageFormat.getBitsPerPixel(ImageFormat.YUV_420_888)
             val outputBuffer = ByteArray(pixelCount * pixelSizeBits / 8)

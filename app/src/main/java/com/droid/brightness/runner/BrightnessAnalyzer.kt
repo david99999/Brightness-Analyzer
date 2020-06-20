@@ -4,36 +4,41 @@ import android.util.Log
 import androidx.annotation.IntDef
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import com.droid.brightness.runner.Utils.Companion.YUV420888ToNv21
 import com.droid.brightness.analyzer.BrightnessAnalyzer as NativeAnalyzer
 
-
+/**
+ * Analyzer that decomposes {@link ImageProxy} into a 256 IntArray containing an average
+ * representation of the brightness on the image, if an image is bright it will contain
+ * more values on the 240~255 positions of the @property histogram, and for dark images
+ * the lower positions (0~10) will contain more values
+ **/
 class BrightnessAnalyzer(private var listener: BrightnessListener) : ImageAnalysis.Analyzer {
     val TAG = "BrightnessAnalyzer"
     override fun analyze(image: ImageProxy) {
         val pixelsProcessed = IntArray(1)
-        val histogram = NativeAnalyzer.getHistogram(
-            Utils.yuv420888ToNv21(image),
+        val histogram = NativeAnalyzer.getHistogram( // Calling native brightness calculation
+            YUV420888ToNv21(image),
             image.width,
             image.height,
             2,
             pixelsProcessed
         )
-        val darkRange = IntRange(0, 10)
-        val normalRange = IntRange(11, 249)
-        val brightRange = IntRange(250, 255)
-        val sections = arrayListOf(0, 0, 0)
+        val darkRange = IntRange(0, 10) // Dark values are contained in this range in the histogram
+        val normalRange = IntRange(11, 249) // Normal colors are the most broad part
+        val brightRange = IntRange(250, 255) // Bright colors are mostly on 5 last positions
+        val ranges = arrayListOf(0, 0, 0)
         for (index in histogram.indices) {
             when (index) {
-                in darkRange -> sections[0] += histogram[index]
-                in normalRange -> sections[1] += histogram[index]
-                else -> sections[2] += histogram[index]
+                in darkRange -> ranges[0] += histogram[index]
+                in normalRange -> ranges[1] += histogram[index]
+                else -> ranges[2] += histogram[index]
             }
         }
-        sections[0] /= (darkRange.last - darkRange.first) // dark average
-        sections[1] /= (normalRange.last - normalRange.first) // normal average
-        sections[2] /= (brightRange.last - brightRange.first) // bright average
-        Log.i(TAG, sections.toString())
-        listener.onBrightnessAnalyzed(histogram, sections.indexOf(sections.max()))
+        ranges[0] /= (darkRange.last - darkRange.first) // dark average
+        ranges[1] /= (normalRange.last - normalRange.first) // normal average
+        ranges[2] /= (brightRange.last - brightRange.first) // bright average
+        listener.onBrightnessAnalyzed(histogram, ranges.indexOf(ranges.max()))
         image.close()
     }
 
