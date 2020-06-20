@@ -25,9 +25,10 @@ extern "C" {
  * @param width The Frame width
  * @param height The Frame height
  * @param samplingFactor The number of pixels to skip when counting average brightness
- * @param pixelsProcessed Will contain the number if pixels processed after applying #samplingFactor
+ * @param pixelsProcessed Will contain the number of pixels processed after applying #samplingFactor
  * @return A 256 IntArray containing the average black/white color values, Ex:
  *
+ * A 2000 pixels white-image will return an IntArray with positions like:
  * [0]  -> 0
  * [1]  -> 0
  * [2]  -> 0
